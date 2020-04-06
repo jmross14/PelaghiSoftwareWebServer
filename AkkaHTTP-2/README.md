@@ -1,15 +1,63 @@
 # Akka_HTTP
-This is a simple project to demonstrate how to use Akka HTTP and Akka Actors to build a rest api. Keep in mind to check back here for anything that might change in the requirements and also because these instructions will likely grow as as I build out this project.
+This is a simple project to demonstrate how to use Akka HTTP and Akka Actors to build a rest api. This project demonstrates how to use Slick to access a PostgresSql, as well as, some basic unit testing.
 
 ## Getting Started
-Clone this project to your local system and use the following Maven command from the terminal in the AkkaHTTP-1 directory.
+Clone this project to your local system and use the following Maven command from the terminal in the AkkaHTTP-2 directory.
+
+Note: These commands were run from Ubuntu 19.11. They may change slightly depending on your system.
+
+First we will create the user for the database
+```
+$ su -u postgres
+$ createuser --interactive
+```
+This will bring you to some prompts to create the user. Here for the simplicity of the project use the same name as the Database you will be using.
+```
+Output
+Enter name of role to add: <Name of Database you will add>
+Shall the new role be a superuser? (y/n) y
+```
+Next we will create the user's password
+```
+$ psql
+$ ALTER USER <your user's name> WITH PASSWORD 'your password';
+$ \q
+```
+Next we will create the database
+```
+$ createdb <Name of your Database>
+```
+Next download the project and change into AkkaHttp-2's directory.
 
 ```
-git clone https://github.com/jmross14/PelaghiSoftwareWebServer.git
-cd PelaghiSoftwareWebServer/AkkaHTTP-1
-mvn compile exec:exec
+$ git clone https://github.com/jmross14/PelaghiSoftwareWebServer.git
+$ cd PelaghiSoftwareWebServer/AkkaHTTP-2
 ```
+We will need to change the database information in src/main/resources/application.example
+```
+slick-postgres {
+    profile = "slick.jdbc.PostgresProfile$"
+    db {
+        dataSourceClass = "slick.jdbc.DriverDataSource"
+        properties = {
+            driver = "org.postgresql.Driver"
+            url = "jdbc:postgresql://localhost/<your database name>"
+            user = "<your database user name>"
+            password = "<your password>"
+        }
+    }
+}
+```
+Once done with that, rename the file application.conf
+
+We should be good to run the project at this point.
+```
+$ mvn compile exec:exec
+``` 
+
+
 
 ## Prerequisites
 * OpenJDK 11
 * Maven 3.6.3
+* PostgreSQL 11.7

@@ -8,7 +8,7 @@ Note: These commands were run from Ubuntu 19.11. They may change slightly depend
 
 First we will create the user for the database
 ```
-$ su -u postgres
+$ sudo su -u postgres
 $ createuser --interactive
 ```
 This will bring you to some prompts to create the user. Here for the simplicity of the project use the same name as the Database you will be using.

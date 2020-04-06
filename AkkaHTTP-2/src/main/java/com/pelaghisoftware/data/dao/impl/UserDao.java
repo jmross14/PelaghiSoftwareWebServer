@@ -1,55 +1,29 @@
 package com.pelaghisoftware.data.dao.impl;
-
-import akka.NotUsed;
-import akka.stream.Materializer;
-import akka.stream.alpakka.slick.javadsl.Slick;
-import akka.stream.alpakka.slick.javadsl.SlickRow;
-import akka.stream.alpakka.slick.javadsl.SlickSession;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import com.pelaghisoftware.data.TableInitConstants;
 import com.pelaghisoftware.data.dao.Dao;
-import com.pelaghisoftware.data.dao.impl.base.BaseDaoImpl;
+import com.pelaghisoftware.data.dao.DatabaseCommonOps;
 import com.pelaghisoftware.data.entity.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * DAO to perform crud operations for Users.
  */
-public class UserDao extends BaseDaoImpl implements Dao<User>
+public class UserDao implements Dao<User>
 {
     private final static Logger logger = LoggerFactory.getLogger(UserDao.class);
-
-    private String tableName;
-
-    private SlickSession session;
-    private Materializer materializer;
+    protected SessionFactory sessionFactory;
 
     /**
      * Creates an UserDao object that will query the SITE_USERS table
-     * @param session Current SlickSession
-     * @param materializer Current ActorMaterializer
      */
-    public UserDao(SlickSession session, Materializer materializer)
+    public UserDao(SessionFactory sessionFactory)
     {
-        this(TableInitConstants.SITE_USERS, session, materializer);
-    }
-
-    /**
-     * Creates an UserDAO object that will query the specified table
-     * @param tableName Table to be queried
-     * @param session Current SlickSession
-     * @param materializer Current ActorMaterializer
-     */
-    public UserDao(String tableName, SlickSession session, Materializer materializer)
-    {
-        this.session = session;
-        this.materializer = materializer;
-        this.tableName = tableName;
+        this.sessionFactory = sessionFactory;
     }
 
     /**
@@ -60,17 +34,15 @@ public class UserDao extends BaseDaoImpl implements Dao<User>
     @Override
     public Optional<User> get(String id)
     {
-        String SELECT_USER = "SELECT userName, password FROM " + tableName + " WHERE userName = '" +
-                id + "';";
+        Session session = sessionFactory.openSession();
 
-        List<User> users = getUsers(SELECT_USER);
+        User user = session.get(User.class, id);
 
-        User user = new User();
+        session.close();
 
-        //Only return the user if 1 user was found. Should not be an issue as userName is UNIQUE.
-        if(users.size() == 1)
+        if(user == null)
         {
-            user = users.get(0);
+            return Optional.empty();
         }
 
         return Optional.of(user);
@@ -83,9 +55,11 @@ public class UserDao extends BaseDaoImpl implements Dao<User>
     @Override
     public List<User> getAll()
     {
-        String SELECT_USERS = "SELECT userName, password FROM " + tableName + ";";
+        Session session = sessionFactory.openSession();
 
-        List<User> users = getUsers(SELECT_USERS);
+        List<User> users = DatabaseCommonOps.loadAllData(User.class, session);
+
+        session.close();
 
         return users;
     }
@@ -98,12 +72,30 @@ public class UserDao extends BaseDaoImpl implements Dao<User>
     @Override
     public boolean insert(User user)
     {
-        String INSERT_USER = "INSERT INTO " + tableName + " (userName, password) VALUES ('" +
-                user.getUserName() + "', '" + user.getPassword() + "');";
-        return executeStatement(
-                INSERT_USER,
-                session,
-                materializer);
+        Session session = sessionFactory.openSession();
+
+        Transaction tx = null;
+        try
+        {
+            tx = session.beginTransaction();;
+
+            session.save(user);
+
+            tx.commit();
+        }
+        catch (Exception e)
+        {
+            if (tx != null)
+            {
+                tx.rollback();
+            }
+            session.close();
+            logger.error(e.getMessage());
+            return false;
+        }
+
+        session.close();
+        return true;
     }
 
     /**
@@ -114,12 +106,30 @@ public class UserDao extends BaseDaoImpl implements Dao<User>
     @Override
     public boolean update(User user)
     {
-        String UPDATE_USER = "UPDATE " + tableName + " SET userName = '" + user.getUserName() + "', password = '" +
-                user.getPassword() + "' WHERE userName = '" + user.getUserName() + "';";
-        return executeStatement(
-                UPDATE_USER,
-                session,
-                materializer);
+        Session session = sessionFactory.openSession();
+
+        Transaction tx = null;
+        try
+        {
+            tx = session.beginTransaction();;
+
+            session.update(user);
+
+            tx.commit();
+        }
+        catch (Exception e)
+        {
+            if (tx != null)
+            {
+                tx.rollback();
+            }
+            session.close();
+            logger.error(e.getMessage());
+            return false;
+        }
+
+        session.close();
+        return true;
     }
 
     /**
@@ -130,40 +140,29 @@ public class UserDao extends BaseDaoImpl implements Dao<User>
     @Override
     public boolean delete(User user)
     {
-        String DELETE_USER = "DELETE FROM " + tableName + " WHERE userName = '" + user.getUserName() + "';";
-        return executeStatement(
-                DELETE_USER,
-                session,
-                materializer);
-    }
+        Session session = sessionFactory.openSession();
 
-    /**
-     * Gets a list of users based on the input query
-     * @param query The query to get a list of users
-     * @return List. All users that are returned from the query
-     */
-    private List<User> getUsers(String query)
-    {
-        //Create a source to store the users in
-        Source<User, NotUsed> source = Slick.source(
-                session,
-                query,
-                (SlickRow row) -> new User(row.nextString(), row.nextString()));
-
-        //Runs the query and stores in a CompletionStage
-        CompletionStage<List<User>> foundUserFuture = source.runWith(
-                Sink.seq(),
-                materializer);
-
-        //Change the CompletionStage to a List of Users. If any exceptions occur
-        //return an empty List.
+        Transaction tx = null;
         try
         {
-            return foundUserFuture.toCompletableFuture().get(3, TimeUnit.SECONDS);
+            tx = session.beginTransaction();;
+
+            session.delete(user);
+
+            tx.commit();
         }
-        catch (InterruptedException | ExecutionException | TimeoutException e)
+        catch (Exception e)
         {
-            return new ArrayList<>();
+            if (tx != null)
+            {
+                tx.rollback();
+            }
+            session.close();
+            logger.error(e.getMessage());
+            return false;
         }
+
+        session.close();
+        return true;
     }
 }

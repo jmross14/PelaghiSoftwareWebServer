@@ -33,22 +33,36 @@ Next download the project and change into AkkaHttp-2's directory.
 $ git clone https://github.com/jmross14/PelaghiSoftwareWebServer.git
 $ cd PelaghiSoftwareWebServer/AkkaHTTP-2
 ```
-We will need to change the database information in src/main/resources/application.example
+We will need to change the database information in src/main/resources/example.hibernate.cfg.xml
 ```
-slick-postgres {
-    profile = "slick.jdbc.PostgresProfile$"
-    db {
-        dataSourceClass = "slick.jdbc.DriverDataSource"
-        properties = {
-            driver = "org.postgresql.Driver"
-            url = "jdbc:postgresql://localhost/<your database name>"
-            user = "<your database user name>"
-            password = "<your password>"
-        }
-    }
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <!-- Update databaseName, user, and password -->
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost/databaseName</property>
+        <property name="connection.username">user</property>
+        <property name="connection.password">password</property>
+        <property name="show_sql">false</property>
+
+        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider</property>
+        <property name="hibernate.c3p0.min_size">5</property>
+        <property name="hibernate.c3p0.max_size">20</property>
+        <property name="hibernate.c3p0.timeout">120</property>
+
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- If you change the package structure, make sure to update this so it matches your program. -->
+        <mapping class="com.pelaghisoftware.data.entity.User" />
+
+    </session-factory>
+</hibernate-configuration>
 ```
-Once done with that, rename the file application.conf
+Once done with that, rename the file hibernate.cfg.xml
 
 We should be good to run the project at this point.
 ```

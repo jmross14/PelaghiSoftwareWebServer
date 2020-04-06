@@ -1,5 +1,9 @@
 package com.pelaghisoftware.data.dao;
 
+import org.hibernate.Session;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
 

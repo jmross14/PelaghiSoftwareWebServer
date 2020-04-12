@@ -33,7 +33,10 @@ Next download the project and change into AkkaHttp-2's directory.
 $ git clone https://github.com/jmross14/PelaghiSoftwareWebServer.git
 $ cd PelaghiSoftwareWebServer/AkkaHTTP-2
 ```
-We will need to change the database information in src/main/resources/application.example
+We will need to change the database information in src/main/resources/application.example. If you don't like vim, use your favorite text editor.
+```
+vim src/main/resources/application.example
+```
 ```
 slick-postgres {
     profile = "slick.jdbc.PostgresProfile$"
@@ -49,7 +52,13 @@ slick-postgres {
 }
 ```
 Once done with that, rename the file application.conf
-
+```
+cp src/main/resources/application.example src/main/resources/application.conf
+```
+or
+```
+mv src/main/resources/application.example src/main/resources/application.conf
+```
 We should be good to run the project at this point.
 ```
 $ mvn compile exec:exec

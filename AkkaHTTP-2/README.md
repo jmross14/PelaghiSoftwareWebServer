@@ -17,18 +17,18 @@ Output
 Enter name of role to add: <Name of Database you will add>
 Shall the new role be a superuser? (y/n) y
 ```
-Next we will create the user's password
-```
-$ psql
-$ ALTER USER <your user's name> WITH PASSWORD 'your password';
-$ \q
-```
 Next we will create the database
 ```
 $ createdb <Name of your Database>
 ```
+Next we will create the user's password and grant permissions to the database
+```
+$ psql
+$ ALTER USER <your user's name> WITH PASSWORD '<your password>';
+$ GRANT ALL PRIVILEGES ON DATABASE <database name> TO <your user's name>;
+$ \q
+```
 Next download the project and change into AkkaHttp-2's directory.
-
 ```
 $ git clone https://github.com/jmross14/PelaghiSoftwareWebServer.git
 $ cd PelaghiSoftwareWebServer/AkkaHTTP-2

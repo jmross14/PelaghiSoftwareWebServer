@@ -1,6 +1,6 @@
 package com.pelaghisoftware.data.dao.impl;
 
-import com.pelaghisoftware.data.dao.DatabaseCommonOps;
+import com.pelaghisoftware.data.DatabaseCommonOps;
 import com.pelaghisoftware.data.entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

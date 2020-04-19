@@ -13,7 +13,7 @@ import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import com.pelaghisoftware.data.dao.Dao;
 import com.pelaghisoftware.data.dao.impl.UserDao;
-import com.pelaghisoftware.data.dao.DatabaseCommonOps;
+import com.pelaghisoftware.data.DatabaseCommonOps;
 import com.pelaghisoftware.data.entity.response.message.ErrorMessage;
 import com.pelaghisoftware.data.entity.User;
 

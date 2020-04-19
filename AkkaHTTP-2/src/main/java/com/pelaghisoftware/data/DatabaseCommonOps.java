@@ -1,4 +1,4 @@
-package com.pelaghisoftware.data.dao;
+package com.pelaghisoftware.data;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

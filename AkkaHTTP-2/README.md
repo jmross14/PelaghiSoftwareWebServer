@@ -2,9 +2,9 @@
 This is a simple project to demonstrate how to use Akka HTTP and Akka Actors to build a rest api. This project demonstrates how to use Slick to access a PostgresSql, as well as, some basic unit testing.
 
 ## Getting Started
-Clone this project to your local system and use the following Maven command from the terminal in the AkkaHTTP-2 directory.
+Clone this project to your local system and use the following commands from the terminal.
 
-Note: These commands were run from Ubuntu 19.11. They may change slightly depending on your system.
+Note: These commands were run from Ubuntu 19.10. They may change slightly depending on your system.
 
 First we will create the user for the database
 ```
@@ -17,18 +17,18 @@ Output
 Enter name of role to add: <Name of Database you will add>
 Shall the new role be a superuser? (y/n) y
 ```
-Next we will create the user's password
-```
-$ psql
-$ ALTER USER <your user's name> WITH PASSWORD 'your password';
-$ \q
-```
 Next we will create the database
 ```
 $ createdb <Name of your Database>
 ```
+Next we will create the user's password and grant permissions to the database
+```
+$ psql
+$ ALTER USER <your user's name> WITH PASSWORD '<your password>';
+$ GRANT ALL PRIVILEGES ON DATABASE <database name> TO <your user's name>;
+$ \q
+```
 Next download the project and change into AkkaHttp-2's directory.
-
 ```
 $ git clone https://github.com/jmross14/PelaghiSoftwareWebServer.git
 $ cd PelaghiSoftwareWebServer/AkkaHTTP-2
@@ -64,13 +64,17 @@ We will need to change the database information in src/main/resources/example.hi
 ```
 Once done with that, rename the file hibernate.cfg.xml
 
+```
+cp src/main/resources/example.hibernate.cfg.xml src/main/resources/hibernate.cfg.xml
+```
+or
+```
+mv src/main/resources/example.hibernate.cfg.xml src/main/resources/hibernate.cfg.xml
+```
 We should be good to run the project at this point.
 ```
 $ mvn compile exec:exec
 ``` 
-
-
-
 ## Prerequisites
 * OpenJDK 11
 * Maven 3.6.3

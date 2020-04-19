@@ -1,5 +1,5 @@
 # Akka_HTTP
-This is a simple project to demonstrate how to use Akka HTTP and Akka Actors to build a rest api. Keep in mind to check back here for anything that might change in the requirements and also because these instructions will likely grow as as I build out this project.
+This is a simple project to demonstrate how to use Akka HTTP to build a rest api.
 
 ## Getting Started
 Clone this project to your local system and use the following Maven command from the terminal in the AkkaHTTP-1 directory.

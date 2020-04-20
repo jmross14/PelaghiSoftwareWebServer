@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * This class contains the static methods for common database operations.
- * All other DAO implementations should extend this class.
+ * This class contains the static methods for common database
+ * operations.
  *
- * Note: Class is not meant to be instantiated. Making the class abstract
- * allows for the use of the static methods but prevents instantiation.
+ * Note: Class is not meant to be instantiated.
  */
 public class DatabaseCommonOps
 {
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseCommonOps.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(DatabaseCommonOps.class);
 
     /**
      * Creates a Session Factory for the database.
@@ -32,7 +32,8 @@ public class DatabaseCommonOps
     {
         SessionFactory sessionFactory;
 
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+        final StandardServiceRegistry registry =
+                new StandardServiceRegistryBuilder()
                 .configure()
                 .build();
         try
@@ -52,19 +53,23 @@ public class DatabaseCommonOps
     }
 
     /**
-     * Returns a list of all of the specified entities in the database
+     * Returns a list of all of the specified entities in the
+     * database
      * @param type Entity Class to search the db for.
      * @param session A current session
      * @param <T> The type of Entity
      * @return List of the entities specified by the type param
      */
-    public static <T> List<T> loadAllData(Class<T> type, Session session)
+    public static <T> List<T> loadAllData(Class<T> type,
+                                          Session session)
     {
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(type);
         criteria.from(type);
 
-        List<T> data = session.createQuery(criteria).getResultList();
+        List<T> data = session
+                .createQuery(criteria)
+                .getResultList();
         return data;
     }
 }

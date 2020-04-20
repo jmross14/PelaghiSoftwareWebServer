@@ -28,7 +28,8 @@ import static akka.http.javadsl.server.PathMatchers.*;
 
 public class Main extends AllDirectives
 {
-    final static Logger logger = LoggerFactory.getLogger(Main.class);
+    final static Logger logger =
+            LoggerFactory.getLogger(Main.class);
     /**
      * Main Method
      * @param args Arguments passed in when starting the program
@@ -44,23 +45,33 @@ public class Main extends AllDirectives
         final Http http = Http.get(system);
 
         //Used to process the requests into responses
-        final ActorMaterializer materializer = ActorMaterializer.create(system);
+        final ActorMaterializer materializer =
+                ActorMaterializer.create(system);
 
         //Set up the database session factory
-        SessionFactory sessionFactory = DatabaseCommonOps.createSessionFactory().get();
+        SessionFactory sessionFactory =
+                DatabaseCommonOps.createSessionFactory().get();
 
         //Ensures that the session factory is closed when the system terminates
         system.registerOnTermination(sessionFactory::close);
 
-        //In order to access all directives we need an instance where the routes are defined. I used Main as my class
-        //name. Use whatever you name your class.
+        //In order to access all directives we need an instance where the routes
+        // are defined. I used Main as my class name.
+        // Use whatever you name your class.
         Main app = new Main();
 
-        //Maps the routes into the system allowing the HttpRequest to be used and output a HttpRequest back to the User.
-        final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.createRoute(sessionFactory).flow(system, materializer);
+        //Maps the routes into the system allowing the HttpRequest to be used
+        //and output a HttpRequest back to the User.
+        final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow =
+                app.createRoute(sessionFactory)
+                .flow(system, materializer);
 
         //Binds the server to a port to start accepting requests
-        final CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost("localhost", 8099), materializer);
+        final CompletionStage<ServerBinding> binding =
+                http.bindAndHandle(routeFlow,
+                                   ConnectHttp.toHost("localhost",
+                                                 8099),
+                                   materializer);
 
         logger.info("Server online at http://localhost:8099/");
         logger.info("Press Return to stop...");
@@ -68,8 +79,10 @@ public class Main extends AllDirectives
         System.in.read(); //let it run until user presses return
 
         binding
-                .thenCompose(ServerBinding::unbind) //trigger unbinding from the port
-                .thenAccept(unbound -> system.terminate()); // and shutdown when done
+                //trigger unbinding from the port
+                .thenCompose(ServerBinding::unbind)
+                // and shutdown when done
+                .thenAccept(unbound -> system.terminate());
     }
 
     private Route createRoute(SessionFactory sessionFactory)
@@ -89,7 +102,9 @@ public class Main extends AllDirectives
                 })
             ),
             get(() ->
-                path(segment("user").slash().concat(segment()), (String userName) ->
+                path(segment("user")
+                        .slash()
+                        .concat(segment()), (String userName) ->
                 {
                     Optional<User> user = userDao.get(userName);
 
@@ -113,10 +128,12 @@ public class Main extends AllDirectives
             ),
             post(() ->
                 path(segment("user").slash().concat("add"), () ->
-                    entity(Jackson.unmarshaller(User.class), user ->
+                    entity(Jackson.unmarshaller(User.class),
+                           user ->
                     {
 
-                        Optional<User> userCheck = userDao.get(user.getUserName());
+                        Optional<User> userCheck =
+                                userDao.get(user.getUserName());
 
                         if(userCheck.isEmpty())
                         {
@@ -147,9 +164,11 @@ public class Main extends AllDirectives
             ),
             put(() ->
                 path(segment("user").slash().concat("update"), () ->
-                    entity(Jackson.unmarshaller(User.class), user ->
+                    entity(Jackson.unmarshaller(User.class),
+                           user ->
                     {
-                        Optional<User> userCheck = userDao.get(user.getUserName());
+                        Optional<User> userCheck =
+                                userDao.get(user.getUserName());
 
                         if(userCheck.isEmpty())
                         {
@@ -180,9 +199,11 @@ public class Main extends AllDirectives
             ),
             delete(() ->
                 path(segment("user").slash().concat("delete"), () ->
-                    entity(Jackson.unmarshaller(User.class), user ->
+                    entity(Jackson.unmarshaller(User.class),
+                           user ->
                     {
-                        Optional<User> userCheck = userDao.get(user.getUserName());
+                        Optional<User> userCheck =
+                                userDao.get(user.getUserName());
 
                         if(userCheck.isEmpty())
                         {
@@ -209,7 +230,8 @@ public class Main extends AllDirectives
                                 return complete(StatusCodes.NO_CONTENT);
                             }
                         }
-                    }))
+                    })
+                )
             )
         );
     }

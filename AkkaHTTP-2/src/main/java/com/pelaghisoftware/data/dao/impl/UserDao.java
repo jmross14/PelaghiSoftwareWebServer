@@ -15,11 +15,14 @@ import java.util.*;
  */
 public class UserDao implements Dao<User>
 {
-    private final static Logger logger = LoggerFactory.getLogger(UserDao.class);
+    private final static Logger logger =
+            LoggerFactory.getLogger(UserDao.class);
+
     protected SessionFactory sessionFactory;
 
     /**
-     * Creates an UserDao object that will query the SITE_USERS table
+     * Creates an UserDao object that will query the
+     * SITE_USERS table
      */
     public UserDao(SessionFactory sessionFactory)
     {
@@ -29,7 +32,8 @@ public class UserDao implements Dao<User>
     /**
      * Gets the specified user from the Database
      * @param id The userName for the specified user
-     * @return Optional. Will return a blank User if no user was found.
+     * @return Optional. Will return a blank User if no user was
+     *         found.
      */
     @Override
     public Optional<User> get(String id)
@@ -57,7 +61,8 @@ public class UserDao implements Dao<User>
     {
         Session session = sessionFactory.openSession();
 
-        List<User> users = DatabaseCommonOps.loadAllData(User.class, session);
+        List<User> users =
+                DatabaseCommonOps.loadAllData(User.class, session);
 
         session.close();
 
@@ -67,7 +72,8 @@ public class UserDao implements Dao<User>
     /**
      * Inserts a new user into the database
      * @param user The user to insert into the database.
-     * @return True if the insertion was successful. False otherwise
+     * @return True if the insertion was successful.
+     *         False otherwise
      */
     @Override
     public boolean insert(User user)
@@ -77,11 +83,13 @@ public class UserDao implements Dao<User>
         Transaction tx = null;
         try
         {
-            tx = session.beginTransaction();;
+            tx = session.beginTransaction();
 
             session.save(user);
 
             tx.commit();
+
+            session.close();
         }
         catch (Exception e)
         {
@@ -94,14 +102,14 @@ public class UserDao implements Dao<User>
             return false;
         }
 
-        session.close();
         return true;
     }
 
     /**
      * Updates the specified user's information.
      * @param user The user to update
-     * @return True if the update was successful. False otherwise
+     * @return True if the update was successful.
+     *         False otherwise
      */
     @Override
     public boolean update(User user)
@@ -111,11 +119,13 @@ public class UserDao implements Dao<User>
         Transaction tx = null;
         try
         {
-            tx = session.beginTransaction();;
+            tx = session.beginTransaction();
 
             session.update(user);
 
             tx.commit();
+
+            session.close();
         }
         catch (Exception e)
         {
@@ -128,14 +138,14 @@ public class UserDao implements Dao<User>
             return false;
         }
 
-        session.close();
         return true;
     }
 
     /**
      * Delete's the specified user's information
      * @param user The user to delete
-     * @return True if the deletion was successful. False otherwise
+     * @return True if the deletion was successful.
+     *         False otherwise
      */
     @Override
     public boolean delete(User user)
@@ -145,11 +155,13 @@ public class UserDao implements Dao<User>
         Transaction tx = null;
         try
         {
-            tx = session.beginTransaction();;
+            tx = session.beginTransaction();
 
             session.delete(user);
 
             tx.commit();
+
+            session.close();
         }
         catch (Exception e)
         {
@@ -162,7 +174,6 @@ public class UserDao implements Dao<User>
             return false;
         }
 
-        session.close();
         return true;
     }
 }

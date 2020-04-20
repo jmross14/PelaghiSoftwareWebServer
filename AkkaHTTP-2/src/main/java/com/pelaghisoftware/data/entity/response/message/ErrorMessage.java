@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Class to get error messages for HTTP Responses. Set up to use Jackson to
- * marshall/unmarshall data to/from JSON.
+ * Class to get error messages for HTTP Responses. Set up to use
+ * Jackson to marshall/unmarshall data to/from JSON.
  */
 public class ErrorMessage
 {
@@ -53,7 +53,8 @@ public class ErrorMessage
      */
     public static ErrorMessage badRequestMessage()
     {
-        return new ErrorMessage("Bad Request made. Double check your request");
+        return new ErrorMessage("Bad Request made. " +
+                "Double check your request");
     }
 
     /**
@@ -62,7 +63,8 @@ public class ErrorMessage
      */
     public static ErrorMessage userAlreadyExistsMessage()
     {
-        return new ErrorMessage("User Already Exists. Double check your request");
+        return new ErrorMessage("User Already Exists. " +
+                "Double check your request");
     }
 
     /**
@@ -71,6 +73,7 @@ public class ErrorMessage
      */
     public static ErrorMessage userDoesNotExistMessage()
     {
-        return new ErrorMessage("User does not Exist. Double check your request");
+        return new ErrorMessage("User does not Exist. " +
+                "Double check your request");
     }
 }

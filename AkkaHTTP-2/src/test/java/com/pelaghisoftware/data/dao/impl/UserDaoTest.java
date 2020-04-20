@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserDaoTest
 {
-    private static final Logger logger = LoggerFactory.getLogger(UserDaoTest.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(UserDaoTest.class);
 
     private static SessionFactory sessionFactory;
 
@@ -29,7 +30,8 @@ public class UserDaoTest
     private static final List<User> users =
             IntStream.range(0,40)
                 .boxed()
-                .map((i) -> new User("Name" + i, "Password" + i))
+                .map((i) -> new User("Name" + i,
+                                     "Password" + i))
                 .collect(Collectors.toList());
 
     /**
@@ -38,12 +40,13 @@ public class UserDaoTest
     @BeforeAll
     public static void setup()
     {
-        sessionFactory = DatabaseCommonOps.createSessionFactory().get();
+        sessionFactory =
+                DatabaseCommonOps.createSessionFactory().get();
     }
 
     /**
-     * Clean up after testing is done. Removes the Test Table from the Database
-     * and stops the Actor System.
+     * Clean up after testing is done. Removes the Test Table
+     * from the Database and stops the Actor System.
      */
     @AfterAll
     public static void teardown()
@@ -53,7 +56,8 @@ public class UserDaoTest
     }
 
     /**
-     * Initializes the tables in the database before each test is run
+     * Initializes the tables in the database before each
+     * test is run
      */
     @BeforeEach
     public void initDb()
@@ -62,7 +66,8 @@ public class UserDaoTest
     }
 
     /**
-     * Clears out the data in the table after each test is run
+     * Clears out the data in the table after each
+     * test is run
      */
     @AfterEach
     public void cleanDb()
@@ -74,7 +79,7 @@ public class UserDaoTest
      * Tests the get method
      */
     @Test
-    public void testGet() throws InterruptedException, ExecutionException, TimeoutException
+    public void testGet()
     {
         UserDao userDao = new UserDao(sessionFactory);
 
@@ -157,7 +162,7 @@ public class UserDaoTest
             Transaction tx = null;
             try
             {
-                tx = session.beginTransaction();;
+                tx = session.beginTransaction();
 
                 session.save(user);
 
@@ -185,7 +190,8 @@ public class UserDaoTest
     private static void cleanUserTable()
     {
         Session session = sessionFactory.openSession();
-        List<User> currentUsers = DatabaseCommonOps.loadAllData(User.class, session);
+        List<User> currentUsers =
+                DatabaseCommonOps.loadAllData(User.class, session);
         session.close();
 
         for(User user : currentUsers)
@@ -195,7 +201,7 @@ public class UserDaoTest
             Transaction tx = null;
             try
             {
-                tx = session.beginTransaction();;
+                tx = session.beginTransaction();
 
                 session.delete(user);
 

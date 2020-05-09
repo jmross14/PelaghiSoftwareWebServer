@@ -44,7 +44,7 @@ public class ResponseResolver extends AbstractActor
                     HttpResponse response = createResponse(StatusCodes.OK, ContentTypes.APPLICATION_JSON, value.entities);
 
                     //Send the response back to the sender
-                    getSender().tell(response, self());
+                    sender().tell(response, self());
                 })
                 //Response that returns an entity
                 .match(DBOperations.GetEntity.class, value ->
@@ -62,7 +62,7 @@ public class ResponseResolver extends AbstractActor
                     }
 
                     //Send the response back to the sender
-                    getSender().tell(response, self());
+                    sender().tell(response, self());
                 })
                 //Response that responds to a request to insert an entiry
                 .match(DBOperations.InsertEntity.class, value ->
@@ -85,7 +85,7 @@ public class ResponseResolver extends AbstractActor
                     }
 
                     //Send the response back to the sender
-                    getSender().tell(response, self());
+                    sender().tell(response, self());
                 })
                 //Response for when a user is updated
                 .match(DBOperations.UpdateEntity.class, value ->
@@ -108,7 +108,7 @@ public class ResponseResolver extends AbstractActor
                     }
 
                     //Send the response back to the sender
-                    getSender().tell(response, self());
+                    sender().tell(response, self());
                 })
                 //Response for when a user is deleted
                 .match(DBOperations.DeleteEntity.class, value ->
@@ -132,7 +132,7 @@ public class ResponseResolver extends AbstractActor
                     }
 
                     //Send the response back to the sender
-                    getSender().tell(response, self());
+                    sender().tell(response, self());
                 })
                 //Response for login
                 .match(AuthOperations.JwtMessage.class, value ->
@@ -151,7 +151,7 @@ public class ResponseResolver extends AbstractActor
                     }
 
                     //Send the response back to the sender
-                    getSender().tell(response, self());
+                    sender().tell(response, self());
                 })
                 //Response for when an unauthorized operation occurs.
                 .match(AuthOperations.Unauthorized.class, value ->

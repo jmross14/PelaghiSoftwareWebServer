@@ -16,12 +16,15 @@ import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import com.pelaghisoftware.data.actors.SiteUserAccessor;
 import com.pelaghisoftware.data.DatabaseCommonOps;
+import com.pelaghisoftware.data.actors.operations.DBOperations;
 import com.pelaghisoftware.data.entity.User;
 
 import com.pelaghisoftware.server.actors.AuthResolver;
 import com.pelaghisoftware.server.actors.ResponseResolver;
 import com.pelaghisoftware.server.auth.operations.AuthOperations;
 import com.pelaghisoftware.server.routes.UserRoutes;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigFactory;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +73,19 @@ public class Server extends AllDirectives
         dataAccessors.put("UserAccessor", system.actorOf(SiteUserAccessor.props(sessionFactory).withDispatcher("route-blocking-dispatcher"), "UserAccessor"));
         dataAccessors.put("AuthAccessor", system.actorOf(AuthResolver.props(dataAccessors.get("UserAccessor")), "AuthAccessor"));
         dataAccessors.put("ResponseResolver", system.actorOf(ResponseResolver.props(), "ResponseResolver"));
+
+        try
+        {
+            String adminUserName = ConfigFactory.load().getConfig("admin").getString("username");
+            String adminPassword = ConfigFactory.load().getConfig("admin").getString("password");
+
+            User admin = new User(adminUserName, adminPassword);
+            dataAccessors.get("UserAccessor").tell(new DBOperations.InsertEntity(Optional.of(admin)), ActorRef.noSender());
+        }
+        catch (ConfigException e)
+        {
+            logger.info("No admin user passed in config.");
+        }
 
 
         //In order to access all directives we need an instance where the routes

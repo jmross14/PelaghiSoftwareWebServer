@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class AuthResolver extends AbstractActor
 {
-    ActorRef siteUserAccessor;
+    private ActorRef siteUserAccessor;
 
     /**
      * Create props for a AuthResolver
@@ -61,13 +61,16 @@ public class AuthResolver extends AbstractActor
                 //Check a login and return a JWT
                 .match(User.class, value ->
                 {
-                   CompletableFuture<AuthOperations.JwtMessage> jwtMessage = ask(siteUserAccessor, new DBOperations.GetEntity(value.getUserName()), Duration.ofSeconds(1))
-                       .thenApply(Optional.class::cast)
-                       .thenApply(userOption -> checkPassword(value, userOption))
-                       .thenApply(Boolean.class::cast)
-                       .thenApply(loginValid -> createJWT(loginValid, value.getUserName()))
-                       .thenApply(AuthOperations.JwtMessage.class::cast)
-                       .toCompletableFuture();
+                   CompletableFuture<AuthOperations.JwtMessage> jwtMessage =
+                           ask(siteUserAccessor,
+                               new DBOperations.GetEntity(value.getUserName()),
+                               Duration.ofSeconds(1))
+                           .thenApply(Optional.class::cast)
+                           .thenApply(userOption -> checkPassword(value, userOption))
+                           .thenApply(Boolean.class::cast)
+                           .thenApply(loginValid -> createJWT(loginValid, value.getUserName()))
+                           .thenApply(AuthOperations.JwtMessage.class::cast)
+                           .toCompletableFuture();
 
                     pipe(jwtMessage, context().dispatcher()).to(sender());
                 })
@@ -80,7 +83,12 @@ public class AuthResolver extends AbstractActor
                         JWTObject toCheck = (JWTObject)jwt.get();
                         Claims claims = AuthOperations.decodeJWT(toCheck.jwt);
                     }
-                    catch (UnsupportedJwtException | MalformedJwtException | SignatureException | ExpiredJwtException | IllegalArgumentException | NoSuchElementException e)
+                    catch (UnsupportedJwtException |
+                           MalformedJwtException |
+                           SignatureException |
+                           ExpiredJwtException |
+                           IllegalArgumentException |
+                           NoSuchElementException e)
                     {
                         isValid = false;
                     }
@@ -103,7 +111,8 @@ public class AuthResolver extends AbstractActor
 
         if(dbUser.isPresent())
         {
-            result = encoder.matches(user.getEncryptedPassword(), dbUser.get().getEncryptedPassword());
+            result = encoder.matches(user.getEncryptedPassword(),
+                                     dbUser.get().getEncryptedPassword());
         }
 
         return result;
@@ -115,14 +124,18 @@ public class AuthResolver extends AbstractActor
      * @param username String. Username of the user to creat a JWT for
      * @return Message with either a JWT, if valid, or empty if invalid
      */
-    private AuthOperations.JwtMessage createJWT(Boolean loginValid, String username)
+    private AuthOperations.JwtMessage createJWT(Boolean loginValid,
+                                                String username)
     {
         AuthOperations.JwtMessage result;
 
         //Only build the JWT if the user's login is valid.
         if(loginValid)
         {
-            String jwt = AuthOperations.createJWT(UUID.randomUUID().toString(), "pelaghisoftware.com", username, 86400000);
+            String jwt = AuthOperations.createJWT(UUID.randomUUID().toString(),
+                                                  "pelaghisoftware.com",
+                                                  username, 86400000);
+
             result = new AuthOperations.JwtMessage(jwt);
         }
         //Returns an object with no JWT

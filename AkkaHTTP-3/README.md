@@ -71,6 +71,32 @@ or
 ```
 mv src/main/resources/example.hibernate.cfg.xml src/main/resources/hibernate.cfg.xml
 ```
+Likewise we now need to update the conf file located at src/main/resources/application.example.
+```
+route-blocking-dispatcher {
+    type = Dispatcher
+    executor = "thread-pool-executor"
+    thread-pool-executor {
+        fixed-pool-size = 176
+    }
+    throughput = 1
+}
+
+api-secret = "Your Secret Code"
+
+admin {
+    username = "admin"
+    password = "Your Password"
+}
+```
+Once you are done with this, rename the file application.conf
+```
+cp src/main/resources/application.example src/main/resources/application.conf
+```
+or
+```
+mv src/main/resources/application.example src/main/resources/application.conf
+```
 We should be good to run the project at this point.
 ```
 $ mvn compile exec:exec

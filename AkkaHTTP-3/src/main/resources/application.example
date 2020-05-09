@@ -2,9 +2,14 @@ route-blocking-dispatcher {
     type = Dispatcher
     executor = "thread-pool-executor"
     thread-pool-executor {
-        fixed-pool-size = 16
+        fixed-pool-size = 176
     }
     throughput = 1
 }
 
 api-secret = "Your Secret Code"
+
+admin {
+    username = "admin"
+    password = "Your Password"
+}

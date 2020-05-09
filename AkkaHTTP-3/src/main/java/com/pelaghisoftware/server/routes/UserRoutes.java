@@ -142,7 +142,7 @@ public class UserRoutes extends AllDirectives
                                 .thenCompose(message -> ask(responseResolver, message, duration))
                                 .thenApply(HttpResponse.class::cast);
 
-                        //Function to perfomr authentication and return an HttpResponse
+                        //Function to perform authentication and return an HttpResponse
                         CompletionStage<HttpResponse> response = AuthOperations.authCheck(authAccessor,
                                                                                           responseResolver,
                                                                                           jwt,

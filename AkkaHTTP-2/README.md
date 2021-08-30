@@ -1,5 +1,5 @@
 # Akka_HTTP
-This is a simple project to demonstrate how to use Akka HTTP and Akka Actors to build a rest api. This project demonstrates how to use Slick to access a PostgresSql, as well as, some basic unit testing.
+This is a simple project to demonstrate how to use Akka HTTP and Akka Actors to build a rest api. This project demonstrates how to use Hibernate to access a PostgresSql, as well as, some basic unit testing.
 
 ## Getting Started
 Clone this project to your local system and use the following commands from the terminal.
